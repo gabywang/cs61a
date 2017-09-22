@@ -27,6 +27,7 @@ def taxicab(a, b):
     9
     """
     "*** YOUR CODE HERE ***"
+    return abs(street(a) - street(b)) + abs(avenue(a) - avenue(b))
 
 def squares(s):
     """Returns a new list containing square roots of the elements of the
@@ -40,6 +41,7 @@ def squares(s):
     []
     """
     "*** YOUR CODE HERE ***"
+    return [int(pow(x, 0.5)) for x in s if int(pow(x, 0.5))** 2 == x]
 
 def g(n):
     """Return the value of G(n), computed recursively.
@@ -59,6 +61,11 @@ def g(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n <= 3:
+        return n
+    else:
+        return g(n-1)+ 2 * g(n-2)+ 3 * g(n-3)
+
 
 def g_iter(n):
     """Return the value of G(n), computed iteratively.
@@ -78,6 +85,9 @@ def g_iter(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    while n > 3:
+        return g(n-1) + 2 * g(n-2)+ 3 * g(n-3)
+    return n
 
 def pingpong(n):
     """Return the nth element of the ping-pong sequence.
@@ -111,6 +121,17 @@ def pingpong(n):
     True
     """
     "*** YOUR CODE HERE ***"
+
+    def start(i, output, change):
+        if i == n:
+            return output
+        elif i % 7 == 0 or has_seven(i):
+            return start(i+1, output - change, change * (-1))
+        else:
+            return start(i+1, output + change, change)
+
+    return start(1,1,1)
+
 
 def has_seven(k):
     """Returns True if at least one of the digits of k is a 7, False otherwise.
@@ -148,6 +169,16 @@ def count_change(amount):
     9828
     """
     "*** YOUR CODE HERE ***"
+    def count_patitions(n, m):
+        if n == 0:
+            return 1
+        elif n < 0:
+            return 0
+        elif m > n:
+            return 0
+        else:
+            return count_patitions(n-m, m) + count_patitions(n, m * 2)
+    return count_patitions(amount, 1)
 
 ###################
 # Extra Questions #
@@ -164,4 +195,4 @@ def make_anonymous_factorial():
     >>> check(HW_SOURCE_FILE, 'make_anonymous_factorial', ['Assign', 'AugAssign', 'FunctionDef', 'Recursion'])
     True
     """
-    return 'YOUR_EXPRESSION_HERE'
+    return lambda n: (lambda x, f: 1 if x==1 else mul(x, f(sub(x,1),f)))(n, lambda x, f: 1 if x==1 else mul(x, f(sub(x,1),f)))
