@@ -13,6 +13,11 @@ def if_this_not_that(i_list, this):
     5
     """
     "*** YOUR CODE HERE ***"
+    for i in range(len(i_list)):
+        if i_list[i] <= this:
+            print('that')
+        else:
+            print(i_list[i])
 
 # Q4
 def make_city(name, lat, lon):
@@ -64,6 +69,7 @@ def distance(city1, city2):
     5.0
     """
     "*** YOUR CODE HERE ***"
+    return sqrt((get_lat(city1)-get_lat(city2)) ** 2 +(get_lon(city1)-get_lon(city2)) ** 2)
 
 # Q5
 def closer_city(lat, lon, city1, city2):
@@ -81,6 +87,10 @@ def closer_city(lat, lon, city1, city2):
     'Bucharest'
     """
     "*** YOUR CODE HERE ***"
+    if distance([city1[0], lat, lon], city1) < distance([city2[0], lat, lon], city2):
+        return get_name(city1)
+    else:
+        return get_name(city2)
 
 # Connect N: Q6-11
 ######################
@@ -95,7 +105,7 @@ def create_row(size):
     ['-', '-', '-', '-', '-']
     """
     "*** YOUR CODE HERE ***"
-    return _______
+    return ['-' for i in range(size)]
 
 
 def create_board(rows, columns):
@@ -105,7 +115,7 @@ def create_board(rows, columns):
     [['-', '-', '-', '-', '-'], ['-', '-', '-', '-', '-'], ['-', '-', '-', '-', '-']]
     """
     "*** YOUR CODE HERE ***"
-    return _______
+    return [create_row(columns) for i in range(rows)]
 
 
 def replace_elem(lst, index, elem):
@@ -121,7 +131,7 @@ def replace_elem(lst, index, elem):
     """
     assert index >= 0 and index < len(lst), 'Index is out of bounds'
     "*** YOUR CODE HERE ***"
-    return _______
+    return lst[ :index]+[elem]+lst[index+1: ]
 
 
 def get_piece(board, row, column):
@@ -137,7 +147,7 @@ def get_piece(board, row, column):
     '-'
     """
     "*** YOUR CODE HERE ***"
-    return _______
+    return board[row][column]
 
 
 def put_piece(board, max_rows, column, player):
@@ -161,6 +171,12 @@ def put_piece(board, max_rows, column, player):
     -1
     """
     "*** YOUR CODE HERE ***"
+    for row in range(max_rows-1, -1,-1):
+        if get_piece(board, row, column) == '-':
+            new_board = board
+            new_board[row] = replace_elem(board[row], column, player)
+            return (row, new_board)
+    return (-1, board)
 
 
 def make_move(board, max_rows, max_cols, col, player):
@@ -189,6 +205,10 @@ def make_move(board, max_rows, max_cols, col, player):
     -1
     """
     "*** YOUR CODE HERE ***"
+    if col < 0 or col > max_cols - 1:
+        return (-1, board)
+    else:
+        return put_piece(board, max_rows, col, player)
 
 def print_board(board, max_rows, max_cols):
     """Prints the board. Row 0 is at the top, and column 0 at the far left.
@@ -204,6 +224,11 @@ def print_board(board, max_rows, max_cols):
     X -
     """
     "*** YOUR CODE HERE ***"
+    for i in range(max_rows):
+        output = " "
+        for j in range(max_cols):
+            output = output + " " + get_piece(board, i, j)
+        print(output.strip())
 
 def check_win_row(board, max_rows, max_cols, num_connect, row, player):
     """ Returns True if the given player has a horizontal win

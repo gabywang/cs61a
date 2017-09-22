@@ -85,9 +85,15 @@ def g_iter(n):
     True
     """
     "*** YOUR CODE HERE ***"
-    while n > 3:
-        return g(n-1) + 2 * g(n-2)+ 3 * g(n-3)
-    return n
+    i = 1
+    g = [0] * (n+1)
+    while i <= n:
+        if i <= 3:
+            g[i] = i
+        else:
+            g[i] = g[i-1]+ 2*g[i-2]+ 3*g[i-3]
+        i += 1
+    return g[n]
 
 def pingpong(n):
     """Return the nth element of the ping-pong sequence.
