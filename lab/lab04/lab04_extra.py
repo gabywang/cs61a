@@ -14,6 +14,13 @@ def flatten(lst):
     [1, 1, 1, 1, 1, 1]
     """
     "*** YOUR CODE HERE ***"
+    out = []
+    for item in lst:
+        if isinstance(item, (list, tuple)):
+            out.extend(flatten(item))
+        else:
+            out.append(item)
+    return out
 
 # Q14
 def merge(lst1, lst2):
@@ -29,3 +36,6 @@ def merge(lst1, lst2):
     [2, 4, 5, 6, 7]
     """
     "*** YOUR CODE HERE ***"
+    out = lst1+lst2
+    out.sort()
+    return out
