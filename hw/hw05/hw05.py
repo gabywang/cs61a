@@ -93,6 +93,11 @@ def replace_leaf(t, old, new):
     True
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t) and label(t) == old:
+        return tree(new)
+    else:
+        new_branches = [replace_leaf(b, old, new) for b in branches(t)]
+        return tree(label(t), new_branches)
 
 def print_move(origin, destination):
     """Print instructions to move a disk."""
@@ -127,6 +132,15 @@ def move_stack(n, start, end):
     """
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
+    #lst = [[] for x in range(3)]
+    #lst[start-1] = [x for x in range(n)]
+
+    rods = [1, 2, 3]
+    if n > 0:
+        alter = [x for x in rods if x != start and x != end][0]
+        move_stack(n-1, start, alter)
+        print_move(start, end)
+        move_stack(n-1, alter, end)
 
 def interval(a, b):
     """Construct an interval from a to b."""
@@ -221,4 +235,3 @@ def polynomial(x, c):
     '18.0 to 23.0'
     """
     "*** YOUR CODE HERE ***"
-
