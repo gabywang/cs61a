@@ -1,0 +1,29 @@
+make_user(
+    'Xiaowen Wang',     # name
+    [                   # reviews
+        # Northside restaurants
+        make_review('Jasmine Thai', 4.0),
+        make_review('Kimchi Garden', 5.0),
+        make_review('C U Sushi', 4.5),
+        make_review('Peets Coffee & Tea', 4.0),
+        make_review('Peking Express', 4.5),
+        make_review('T C Garden Restaurant', 3.0),
+        make_review('Hummingbird Cafe', 4.0),
+        make_review('Celia\'s', 1.5),
+        make_review('Northside Cafe', 1.0),
+        make_review('La Val\'s Pizza', 4.0),
+        make_review('Urbann Turbann', 5.0),
+        make_review('Zach\'s Snacks', 1.5),
+        make_review('Nefeli Caffe', 4.5),
+        # Westside restaurants
+        make_review('La Cascada Taqueria', 3.0),
+        make_review('T-Toust', 3.0),
+        make_review('Sushi House', 4.5),
+        make_review('Cinnaholic', 5.0),
+        make_review('Saturn Cafe', 1.5),
+        make_review('Punjabi By Nature', 2.5),
+        make_review('Suya African Caribbean Grill', 2.0),
+        make_review('Cafe Rio', 4.0),
+        make_review('The Sunny Side Caf\u00e9', 1.5),
+    ]
+)
