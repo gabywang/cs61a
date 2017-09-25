@@ -63,37 +63,37 @@ def make_restaurant(name, location, categories, price, reviews):
     """Return a restaurant data abstraction containing the name, location,
     categories, price, and reviews for that restaurant."""
     # BEGIN Question 2
-    "*** REPLACE THIS LINE ***"
+    return {'name': name, 'location': location, 'categories': categories, 'price':price, 'reviews':reviews}
     # END Question 2
 
 def restaurant_name(restaurant):
     """Return the name of the restaurant, which is a string."""
     # BEGIN Question 2
-    "*** REPLACE THIS LINE ***"
+    return restaurant['name']
     # END Question 2
 
 def restaurant_location(restaurant):
     """Return the location of the restaurant, which is a list containing
     latitude and longitude."""
     # BEGIN Question 2
-    "*** REPLACE THIS LINE ***"
+    return restaurant['location']
     # END Question 2
 
 def restaurant_categories(restaurant):
     """Return the categories of the restaurant, which is a list of strings."""
     # BEGIN Question 2
-    "*** REPLACE THIS LINE ***"
+    return restaurant['categories']
     # END Question 2
 
 def restaurant_price(restaurant):
     """Return the price of the restaurant, which is a number."""
     # BEGIN Question 2
-    "*** REPLACE THIS LINE ***"
+    return restaurant['price']
     # END Question 2
 
 def restaurant_ratings(restaurant):
     """Return a list of ratings, which are numbers from 1 to 5, of the
     restaurant based on the reviews of the restaurant."""
     # BEGIN Question 2
-    "*** REPLACE THIS LINE ***"
+    return [review_rating(review) for review in restaurant['reviews']]
     # END Question 2
