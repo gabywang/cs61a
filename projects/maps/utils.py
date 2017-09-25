@@ -81,5 +81,6 @@ def mean(s):
     -0.5
     """
     # BEGIN Question 1
-    "*** REPLACE THIS LINE ***"
+    assert len(s) > 0
+    return sum(s) / len(s)
     # END Question 1

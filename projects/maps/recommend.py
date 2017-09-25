@@ -59,7 +59,14 @@ def group_by_centroid(restaurants, centroids):
 def find_centroid(cluster):
     """Return the centroid of the locations of the restaurants in cluster."""
     # BEGIN Question 5
-    "*** REPLACE THIS LINE ***"
+    latitude = [restaurant_location(restaurant)[0] for restaurant in cluster]
+    longitude = [restaurant_location(restaurant)[1] for restaurant in cluster]
+    return [mean(latitude),mean(longitude)]
+    """"latitude, longitude = [],[]
+    for restaurant in cluster:
+        latitude.append(restaurant_location(restaurant)[0])
+        longitude.append(restaurant_location(restaurant)[1])
+    return [mean(latitude), mean(longitude)]"""
     # END Question 5
 
 
@@ -73,7 +80,9 @@ def k_means(restaurants, k, max_updates=100):
     while old_centroids != centroids and n < max_updates:
         old_centroids = centroids
         # BEGIN Question 6
-        "*** REPLACE THIS LINE ***"
+        cluster = group_by_centroid(restaurants, centroids)
+        new_centroids = [find_centroid(x) for x in cluster]
+        centroids = new_centroids
         # END Question 6
         n += 1
     return centroids
