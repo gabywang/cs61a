@@ -9,26 +9,20 @@ test = {
           >>> # Remember that the mean should return a decimal value
           >>> # If any line causes an error, write AssertionError
           >>> mean([0])
-          42beece70d3b51719b1ca47780e3f5b5
-          # locked
+          0.0
           >>> mean([1, 2, 3, 4, 5])
-          0569d1cff8db32983ed84da6c2fa39b9
-          # locked
+          3.0
           >>> round(mean([1, 4, 4, 3, 2, 3, 2]), 3)
-          3b91acf454e23fa42b42177339e20907
-          # locked
+          2.714
           >>> mean([1] * 100000)
-          b31e5467d1490928605bc0575f592e0e
-          # locked
+          1.0
           >>> mean([1, 2, 3, 4, 5] * 1000000)
-          0569d1cff8db32983ed84da6c2fa39b9
-          # locked
+          3.0
           >>> mean([])
-          7c6bc93c499510232a264297f2f44da3
-          # locked
+          AssertionError
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         }
       ],
       'scored': True,
