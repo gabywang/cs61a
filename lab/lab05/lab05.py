@@ -8,6 +8,7 @@ def map(fn, seq):
     [1, 4, 9]
     """
     "*** YOUR CODE HERE ***"
+    
 
 def filter(pred, seq):
     """Keeps elements in seq only if they satisfy pred.
