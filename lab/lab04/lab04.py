@@ -88,7 +88,7 @@ def closer_city(lat, lon, city1, city2):
     """
     "*** YOUR CODE HERE ***"
     city = make_city('compare', lat, lon)
-
+    
     if distance(city, city1) < distance(city, city2):
         return get_name(city1)
     else:
