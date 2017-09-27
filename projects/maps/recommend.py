@@ -110,13 +110,10 @@ def find_predictor(user, restaurants, feature_fn):
     ys = [reviews_by_user[restaurant_name(r)] for r in restaurants]
 
     # BEGIN Question 7
-    sxx, syy, sxy = 0, 0, 0
-    for x in xs:
-        sxx += (x - mean(xs)) ** 2
-    for y in ys:
-        syy += (y - mean(ys)) ** 2
-    for i in range(len(xs)):
-        sxy += (xs[i] - mean(xs)) * (ys[i] - mean(ys))
+    sxx = sum([(x - mean(xs)) ** 2 for x in xs])
+    syy = sum([(y - mean(ys)) ** 2 for y in ys])
+    sxy = sum([(x - mean(xs)) * (y - mean(ys)) for (x,y) in zip(xs, ys)])
+
     b = sxy / sxx
     a = mean(ys) - b * mean(xs)
     r_squared = sxy ** 2 / (sxx * syy)
@@ -124,12 +121,6 @@ def find_predictor(user, restaurants, feature_fn):
         return a + b * feature_fn(restaurant)
     return predictor, r_squared
     # END Question 7
-
-    def predictor(restaurant):
-        return b * feature_fn(restaurant) + a
-
-    return predictor, r_squared
-
 
 def best_predictor(user, restaurants, feature_fns):
     """Find the feature within feature_fns that gives the highest R^2 value
