@@ -110,6 +110,7 @@ def find_predictor(user, restaurants, feature_fn):
     ys = [reviews_by_user[restaurant_name(r)] for r in restaurants]
 
     # BEGIN Question 7
+    """Calculate the sums of squares, using mean and zip fuctions."""
     sxx = sum([(x - mean(xs)) ** 2 for x in xs])
     syy = sum([(y - mean(ys)) ** 2 for y in ys])
     sxy = sum([(x - mean(xs)) * (y - mean(ys)) for (x,y) in zip(xs, ys)])
