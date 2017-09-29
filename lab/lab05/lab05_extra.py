@@ -23,7 +23,11 @@ def add_song(t, song, category):
           hurt
           ring of fire
     """
-    "*** YOUR CODE HERE ***"
+    """HAVEN'T SOLVED THIS PROBLEM
+    if label(t) == category:
+        return tree(label(t), branches(t) + [tree(song)])
+    return tree(label(t), [add_song(b, song, category) for b in branches(t)])
+    """
 
 def delete(t, target):
     """Returns the tree that results from deleting TARGET from t. If TARGET is
@@ -46,6 +50,7 @@ def delete(t, target):
         wedding dress
     """
     "*** YOUR CODE HERE ***"
+    return tree(label(t),[delete(b, target) for b in branches(t) if label(b)!= target])
 
 # Shakespeare and Dictionaries
 def build_successors_table(tokens):
@@ -66,8 +71,8 @@ def build_successors_table(tokens):
     prev = '.'
     for word in tokens:
         if prev not in table:
-            "*** YOUR CODE HERE ***"
-        "*** YOUR CODE HERE ***"
+            table[prev] = []
+        table[prev] += [word]
         prev = word
     return table
 
@@ -78,7 +83,8 @@ def construct_sent(word, table):
     import random
     result = ' '
     while word not in ['.', '!', '?']:
-        "*** YOUR CODE HERE ***"
+        result += word + ' '
+        word = random.choice(table[word])
     return result + word
 
 def shakespeare_tokens(path='shakespeare.txt', url='http://composingprograms.com/shakespeare.txt'):
