@@ -311,7 +311,19 @@ def make_withdraw(balance, password):
     >>> w(10, 'l33t')
     "Your account is locked. Attempts: ['hwat', 'a', 'n00b']"
     """
-    
+    wrong_lst = []
+    def withdraw(amount, password_input):
+        nonlocal balance
+        if len(wrong_lst) >= 3:
+            return 'Your account is locked. Attempts: {0}'.format(wrong_lst)
+        if password_input != password:
+            wrong_lst.append(password_input)
+            return 'Incorrect password'
+        if amount > balance:
+            return 'Insufficient funds'
+        balance = balance - amount
+        return balance
+    return withdraw
 
 def make_joint(withdraw, old_password, new_password):
     """Return a password-protected withdraw function that has joint access to
@@ -351,4 +363,12 @@ def make_joint(withdraw, old_password, new_password):
     >>> make_joint(w, 'hax0r', 'hello')
     "Your account is locked. Attempts: ['my', 'secret', 'password']"
     """
-    "*** YOUR CODE HERE ***"
+    value = withdraw(0, old_password)
+    if type(value) == str:
+        return value
+        
+    def joint(amount, password_input):
+        if password_input == new_password:
+            return withdraw(amount, old_password)
+        return withdraw(amount, password_input)
+    return joint
