@@ -198,7 +198,15 @@ def balanced(m):
     >>> balanced(mobile(side(1, w), side(1, v)))
     False
     """
-    "*** YOUR CODE HERE ***"
+    def calculate(m):
+        result = [length(m) * total_weight(end(m)) for m in sides(m)]
+        return result[0] == result[1]
+    if is_weight(m):
+        return True
+    elif balanced(end(sides(m)[0])) and balanced(end(sides(m)[1])):
+        return calculate(m)
+    else:
+        return False
 
 def with_totals(m):
     """Return a mobile with total weights stored as the label of each mobile.
@@ -215,7 +223,11 @@ def with_totals(m):
     >>> [label(end(s)) for s in sides(v)]         # v should not change
     [None, None]
     """
-    "*** YOUR CODE HERE ***"
+    if is_weight(m):
+        return m
+    ends = [with_totals(end(s)) for s in sides(m)]
+    total = sum([label(s) for s in ends])
+    return tree(total, [side(length(s), t) for s, t in zip(sides(m), ends)])
 
 ############
 # Mutation #
@@ -241,7 +253,11 @@ def make_counter():
     >>> c('b') + c2('b')
     5
     """
-    "*** YOUR CODE HERE ***"
+    dic ={}
+    def counter(string):
+        dic[string] = dic.get(string, 0) + 1
+        return dic[string]
+    return counter
 
 def make_fib():
     """Returns a function that returns the next Fibonacci number
@@ -262,7 +278,15 @@ def make_fib():
     >>> fib() + sum([fib2() for _ in range(5)])
     12
     """
-    "*** YOUR CODE HERE ***"
+    count = 0
+    def fib():
+        nonlocal count
+        pred, curr = 0, 1
+        for _ in range(count):
+            pred, curr = curr, pred + curr
+        count += 1
+        return pred
+    return fib
 
 def make_withdraw(balance, password):
     """Return a password-protected withdraw function.
@@ -287,7 +311,7 @@ def make_withdraw(balance, password):
     >>> w(10, 'l33t')
     "Your account is locked. Attempts: ['hwat', 'a', 'n00b']"
     """
-    "*** YOUR CODE HERE ***"
+    
 
 def make_joint(withdraw, old_password, new_password):
     """Return a password-protected withdraw function that has joint access to
