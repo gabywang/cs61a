@@ -5,6 +5,7 @@ class Player(object):
         """Create a player object."""
         self.name = name
         self.place = place
+        self.backpack = []
 
     def look(self):
         self.place.look()
@@ -56,12 +57,16 @@ class Player(object):
         """
         if type(person) != str:
             print('Person has to be a string.')
-        "*** YOUR CODE HERE ***"
+        else:
+            curr = self.place.characters
+            if person in curr:
+                print(curr[person].name + ' says: '+ curr[person].message)
+            else:
+                print(person + ' is not here.')
 
 
     def take(self, thing):
-        """Take a thing if thing is at player's current place
-
+        """Take a thing if thing is at player's current place.
         >>> lemon = Thing('Lemon', 'A lemon-looking lemon')
         >>> gbc = Place('GBC', 'You are at Golden Bear Cafe', [], [lemon])
         >>> me = Player('Player', gbc)
@@ -82,7 +87,15 @@ class Player(object):
         """
         if type(thing) != str:
             print('Thing should be a string.')
-        "*** YOUR CODE HERE ***"
+        else:
+            curr = self.place.things
+            if thing in curr:
+                print(self.name +' takes the '+ curr[thing].name)
+                self.backpack.append(curr[thing])
+                curr.pop(curr[thing].name)
+            else:
+                print(thing + ' is not here.')
+
 
     def check_backpack(self):
         """Print each item with its description and return a list of item names.
@@ -154,7 +167,10 @@ class Player(object):
         for item in self.backpack:
             if type(item) == Key:
                 key = item
-        "*** YOUR CODE HERE ***"
+        if key:
+            key.use(self.place.get_neighbor(place))
+        else:
+            print(place + " can't be unlocked without a key!")
 
 
 class Character(object):
@@ -174,7 +190,13 @@ class Thing(object):
     def use(self, place):
         print("You can't use a {0} here".format(self.name))
 
-""" Implement Key here! """
+class Key(Thing):
+    def use(self, place):
+        if place.locked:
+            place.locked = False
+            print(place.name + ' is now unlocked!')
+        else:
+            print(place.name + ' is already unlocked!')
 
 class Treasure(Thing):
     def __init__(self, name, description, value, weight):
@@ -188,7 +210,7 @@ class Place(object):
         self.description = description
         self.characters = {character.name: character for character in characters}
         self.things = {thing.name: thing for thing in things}
-        self.locked = False
+        self.locked = True
         self.exits = {} # {'name': (exit, 'description')}
 
     def look(self):
