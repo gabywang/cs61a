@@ -210,7 +210,7 @@ class Place(object):
         self.description = description
         self.characters = {character.name: character for character in characters}
         self.things = {thing.name: thing for thing in things}
-        self.locked = True
+        self.locked = False
         self.exits = {} # {'name': (exit, 'description')}
 
     def look(self):
