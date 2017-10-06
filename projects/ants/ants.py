@@ -24,7 +24,8 @@ class Place(object):
         self.entrance = None  # A Place
         # Phase 1: Add an entrance to the exit
         # BEGIN Problem 2
-        "*** YOUR CODE HERE ***"
+        if self.exit:
+            self.exit.entrance = self
         # END Problem 2
 
     def add_insect(self, insect):
@@ -84,6 +85,7 @@ class Insect(object):
 
     is_ant = False
     damage = 0
+    watersafe = False
 
     def __init__(self, armor, place=None):
         """Create an Insect with an ARMOR amount and a starting PLACE."""
@@ -119,6 +121,7 @@ class Bee(Insect):
 
     name = 'Bee'
     damage = 1
+    watersafe = True
 
     def sting(self, ant):
         """Attack an ANT, reducing its armor by 1."""
@@ -170,6 +173,7 @@ class HarvesterAnt(Ant):
 
     name = 'Harvester'
     implemented = True
+    food_cost = 2
 
     def action(self, colony):
         """Produce 1 additional food for the COLONY.
@@ -177,7 +181,7 @@ class HarvesterAnt(Ant):
         colony -- The AntColony, used to access game state information.
         """
         # BEGIN Problem 1
-        "*** YOUR CODE HERE ***"
+        colony.food += 1
         # END Problem 1
 
 
@@ -187,6 +191,7 @@ class ThrowerAnt(Ant):
     name = 'Thrower'
     implemented = True
     damage = 1
+    food_cost = 3
 
     def nearest_bee(self, hive):
         """Return the nearest Bee in a Place that is not the HIVE, connected to
@@ -223,7 +228,9 @@ class Water(Place):
     def add_insect(self, insect):
         """Add INSECT if it is watersafe, otherwise reduce its armor to 0."""
         # BEGIN Problem 3
-        "*** YOUR CODE HERE ***"
+        Place.add_insect(self, insect)
+        if insect.watersafe == False:
+            insect.reduce_armor(insect.armor)
         # END Problem 3
 
 
@@ -232,8 +239,9 @@ class FireAnt(Ant):
 
     name = 'Fire'
     damage = 3
+    food_cost = 5
     # BEGIN Problem 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
     # END Problem 4
 
     def reduce_armor(self, amount):
@@ -242,7 +250,11 @@ class FireAnt(Ant):
         the current place.
         """
         # BEGIN Problem 4
-        "*** YOUR CODE HERE ***"
+        # Attack all the bees from its place.
+        if self.armor - amount <= 0:
+            for bee in self.place.bees[:]:  # Slice the sequence to help modify it.
+                bee.reduce_armor(self.damage)
+        Insect.reduce_armor(self, amount)
         # END Problem 4
 
 

@@ -29,13 +29,12 @@ def roll_dice(num_rolls, dice=six_sided):
     # BEGIN PROBLEM 1
     total, pigout = 0, False
     while num_rolls > 0:
-        k = dice()
-        if k == 1:
+        score = dice() # The score a player gets from a single dice.
+        if score == 1:
             pigout = True
         else:
-            total += k
+            total += score
         num_rolls -= 1
-
     return (pigout and 1) or total
 
     # END PROBLEM 1
