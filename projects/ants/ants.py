@@ -23,10 +23,8 @@ class Place(object):
         self.ant = None       # An Ant
         self.entrance = None  # A Place
         # Phase 1: Add an entrance to the exit
-        # BEGIN Problem 2
         if self.exit:
             self.exit.entrance = self
-        # END Problem 2
 
     def add_insect(self, insect):
         """Add an INSECT to this Place.
@@ -42,8 +40,21 @@ class Place(object):
                 self.ant = insect
             else:
                 # Phase 6: Special handling for BodyguardAnt
-                # BEGIN Problem 11
-                assert self.ant is None, 'Two ants in {0}'.format(self)
+                # 1. If current ant is a BodyguardAnt and can contain the ant
+                # we are trying to add.
+                if self.ant.container and self.ant.can_contain(insect):
+                    self.ant.contain_ant(insect)
+                    insect.place = self
+                # 2. If the ant we are trying add is a BodyguardAnt and can contain
+                # the current ant.
+                elif insect.container and insect.can_contain(self.ant):
+                    insect.contain_ant(self.ant)
+                    self.ant = insect
+                    insect.place = self
+                # 3. If neither can contain the other, raise the AssertionError.
+                else:
+                    assert self.ant is None, 'Two ants in {0}'.format(self)
+
                 # END Problem 11
         else:
             self.bees.append(insect)
@@ -136,7 +147,8 @@ class Bee(Insect):
         """Return True if this Bee cannot advance to the next Place."""
         # Phase 4: Special handling for NinjaAnt
         # BEGIN Problem 8
-        return self.place.ant is not None
+        # Return to False if there is no ant or the blocks_path attribute if False for the ant.
+        return self.place.ant is not None and self.place.ant.blocks_path
         # END Problem 8
 
     def action(self, colony):
@@ -157,15 +169,22 @@ class Ant(Insect):
     is_ant = True
     implemented = False  # Only implemented Ant classes should be instantiated
     food_cost = 0
+    blocks_path = True
+    container = False
 
     def __init__(self, armor=1):
         """Create an Ant with an ARMOR quantity."""
         Insect.__init__(self, armor)
 
     def can_contain(self, other):
-        # BEGIN Problem 11
-        "*** YOUR CODE HERE ***"
-        # END Problem 11
+        # Return True when:
+        # 1. The ant is a container.
+        # 2. This ant does not already contain another ant.
+        # 3. The other ant is not a container.
+        if self.container and not self.ant and not other.container:
+            return True
+        else:
+            return False
 
 
 class HarvesterAnt(Ant):
@@ -276,9 +295,7 @@ class LongThrower(ThrowerAnt):
     name = 'Long'
     food_cost = 2
     min_range = 5
-    # BEGIN Problem 6
-    implemented = True   # Change to True to view in the GUI
-    # END Problem 6
+    implemented = True
 
 
 class ShortThrower(ThrowerAnt):
@@ -287,13 +304,17 @@ class ShortThrower(ThrowerAnt):
     name = 'Short'
     food_cost = 2
     max_range = 3
-    # BEGIN Problem 6
-    implemented = True   # Change to True to view in the GUI
-    # END Problem 6
+    implemented = True
 
 
 # BEGIN Problem 7
-# The WallAnt class
+class WallAnt(Ant):
+    name = 'Wall'
+    food_cost = 4
+    implemented = True
+
+    def __init__(self):
+        Ant.__init__(self, 4)
 # END Problem 7
 
 
@@ -302,19 +323,21 @@ class NinjaAnt(Ant):
 
     name = 'Ninja'
     damage = 1
-    # BEGIN Problem 8
-    implemented = False   # Change to True to view in the GUI
-    # END Problem 8
+    food_cost = 5
+    blocks_path = False
+    implemented = True
 
     def action(self, colony):
-        # BEGIN Problem 8
-        "*** YOUR CODE HERE ***"
-        # END Problem 8
+        for bee in self.place.bees[:]:
+            bee.reduce_armor(self.damage)
 
 
-# BEGIN Problem 9
-# The ScubaThrower class
-# END Problem 9
+# A ScubaThrower that can be placed on water.
+class ScubaThrower(ThrowerAnt):
+    name = 'Scuba'
+    food_cost = 6
+    watersafe = True
+    implemented = True
 
 
 class HungryAnt(Ant):
@@ -322,46 +345,44 @@ class HungryAnt(Ant):
     While digesting, the HungryAnt can't eat another Bee.
     """
     name = 'Hungry'
-    # BEGIN Problem 10
-    implemented = False   # Change to True to view in the GUI
-    # END Problem 10
+    food_cost = 4
+    time_to_digest = 3
+    implemented = True
 
     def __init__(self):
-        # BEGIN Problem 10
-        "*** YOUR CODE HERE ***"
-        # END Problem 10
+        Ant.__init__(self)
+        self.digesting = 0
 
     def eat_bee(self, bee):
-        # BEGIN Problem 10
-        "*** YOUR CODE HERE ***"
-        # END Problem 10
+        if bee:
+            bee.reduce_armor(bee.armor)
+            self.digesting = self.time_to_digest
 
+    # Check if it's digesting. Decrement the digesting counter or eat the bee!
     def action(self, colony):
-        # BEGIN Problem 10
-        "*** YOUR CODE HERE ***"
-        # END Problem 10
+        if self.digesting > 0:
+            self.digesting -= 1
+        else:
+            self.eat_bee(random_or_none(self.place.bees))
 
 
 class BodyguardAnt(Ant):
     """BodyguardAnt provides protection to other Ants."""
     name = 'Bodyguard'
-    # BEGIN Problem 11
-    implemented = False   # Change to True to view in the GUI
-    # END Problem 11
+    food_cost = 4
+    container = True
+    implemented = True
 
     def __init__(self):
         Ant.__init__(self, 2)
         self.ant = None  # The Ant hidden in this bodyguard
 
     def contain_ant(self, ant):
-        # BEGIN Problem 11
-        "*** YOUR CODE HERE ***"
-        # END Problem 11
+        self.ant = ant
 
     def action(self, colony):
-        # BEGIN Problem 11
-        "*** YOUR CODE HERE ***"
-        # END Problem 11
+        if self.ant:
+            self.ant.action(colony)
 
 class TankAnt(BodyguardAnt):
     """TankAnt provides both offensive and defensive capabilities."""
