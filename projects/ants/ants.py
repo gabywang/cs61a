@@ -70,8 +70,12 @@ class Place(object):
 
         A Bee is just removed from the list of Bees.
         """
+
+
         if insect.is_ant:
             # Phase 6: Special Handling for BodyguardAnt and QueenAnt
+            if isinstance(insect, QueenAnt) and not insect.imposter:
+                return
             if self.ant is insect:
                 if hasattr(self.ant, 'container') and self.ant.container:
                     self.ant = self.ant.ant
@@ -171,6 +175,7 @@ class Ant(Insect):
     food_cost = 0
     blocks_path = True
     container = False
+    doubled = False
 
     def __init__(self, armor=1):
         """Create an Ant with an ARMOR quantity."""
@@ -388,29 +393,40 @@ class TankAnt(BodyguardAnt):
     """TankAnt provides both offensive and defensive capabilities."""
     name = 'Tank'
     damage = 1
-    # BEGIN Problem 12
-    implemented = False   # Change to True to view in the GUI
-    # END Problem 12
+    food_cost = 6
+    container = True
+    implemented = True
+
+    def __init__(self):
+        Ant.__init__(self, 2)
+        self.ant = None
+
+    def contain_ant(self, ant):
+        self.ant = ant
 
     def action(self, colony):
-        # BEGIN Problem 12
-        "*** YOUR CODE HERE ***"
-        # END Problem 12
+        if self.ant:
+            self.ant.action(colony)
+        for bee in self.place.bees[:]:
+            bee.reduce_armor(self.damage)
 
-# BEGIN Problem 13
-class QueenAnt(Ant):  # You should change this line
-# END Problem 13
+class QueenAnt(ScubaThrower):
     """The Queen of the colony. The game is over if a bee enters her place."""
 
     name = 'Queen'
-    # BEGIN Problem 13
-    implemented = False   # Change to True to view in the GUI
-    # END Problem 13
+    food_cost = 7
+    imposter = False
+    instances = 0
+    implemented = True
+    # buffed = []
 
+    # Three special rules:
+    # 1. Any queen instantiated beyond the first one is an imposter.
     def __init__(self):
-        # BEGIN Problem 13
-        "*** YOUR CODE HERE ***"
-        # END Problem 13
+        ScubaThrower.__init__(self)
+        QueenAnt.instances += 1
+        if QueenAnt.instances > 1:
+            self.imposter = True
 
     def action(self, colony):
         """A queen ant throws a leaf, but also doubles the damage of ants
@@ -418,17 +434,39 @@ class QueenAnt(Ant):  # You should change this line
 
         Impostor queens do only one thing: reduce their own armor to 0.
         """
-        # BEGIN Problem 13
-        "*** YOUR CODE HERE ***"
-        # END Problem 13
+        # The imposters must die!
+        if self.imposter:
+            self.reduce_armor(self.armor)
+            return
+
+        # For the real queen.
+        ScubaThrower.action(self, colony)
+        backward = self.place.exit
+
+        # Double the damage of ants behind the real queen.
+        def double(ant):
+            ant.damage *= 2
+            ant.doubled = True
+
+        while backward:
+            # Damage can only be doubled once.
+            if backward.ant:
+                # Test if the ant on current place is a BodyguartAnt or a Tankant.
+                if isinstance(backward.ant, BodyguardAnt) and backward.ant.ant:
+                    if not backward.ant.ant.doubled:
+                        double(backward.ant.ant)
+                if not backward.ant.doubled:
+                    double(backward.ant)
+            backward = backward.exit
+
 
     def reduce_armor(self, amount):
         """Reduce armor by AMOUNT, and if the True QueenAnt has no armor
         remaining, signal the end of the game.
         """
-        # BEGIN Problem 13
-        "*** YOUR CODE HERE ***"
-        # END Problem 13
+        ScubaThrower.reduce_armor(self, amount)
+        if not self.imposter and self.armor <= 0:
+            bees_win()
 
 class AntRemover(Ant):
     """Allows the player to remove ants from the board in the GUI."""
@@ -449,33 +487,38 @@ def make_slow(action):
 
     action -- An action method of some Bee
     """
-    # BEGIN Problem EC
-    "*** YOUR CODE HERE ***"
-    # END Problem EC
+    def new_action(colony):
+        if colony.time % 2 == 0:
+            return action(colony)
+    return new_action
 
 def make_stun(action):
     """Return a new action method that does nothing.
 
     action -- An action method of some Bee
     """
-    # BEGIN Problem EC
-    "*** YOUR CODE HERE ***"
-    # END Problem EC
+    def new_action(colony):
+        return
+    return new_action
 
 def apply_effect(effect, bee, duration):
     """Apply a status effect to a BEE that lasts for DURATION turns."""
-    # BEGIN Problem EC
-    "*** YOUR CODE HERE ***"
-    # END Problem EC
+    start, origin = 0, bee.action
+    def effect_action(colony):
+        nonlocal start
+        start += 1
+        if start <= duration:
+            return effect(origin)(colony)
+        return origin(colony)
+    bee.action = effect_action
 
 
 class SlowThrower(ThrowerAnt):
     """ThrowerAnt that causes Slow on Bees."""
 
     name = 'Slow'
-    # BEGIN Problem EC
-    implemented = False   # Change to True to view in the GUI
-    # END Problem EC
+    food_cost = 4
+    implemented = True
 
     def throw_at(self, target):
         if target:
@@ -486,9 +529,8 @@ class StunThrower(ThrowerAnt):
     """ThrowerAnt that causes Stun on Bees."""
 
     name = 'Stun'
-    # BEGIN Problem EC
-    implemented = False   # Change to True to view in the GUI
-    # END Problem EC
+    food_cost = 6
+    implemented = True
 
     def throw_at(self, target):
         if target:
