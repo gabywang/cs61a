@@ -31,7 +31,7 @@ def digits(n):
     s = Link.empty
     while n > 0:
         n, last = n // 10, n % 10
-        "*** YOUR CODE HERE ***"
+        s = Link(last, s)
     return s
 
 class Fib():
@@ -58,7 +58,14 @@ class Fib():
         self.value = value
 
     def next(self):
-        "*** YOUR CODE HERE ***"
+        f = Fib()
+        f.previous = self.value
+        if self.value == 0:
+            f.value += 1
+        else:
+            f.value = f.previous + self.previous
+        return f
+
 
     def __repr__(self):
         return str(self.value)
@@ -100,7 +107,36 @@ class VendingMachine:
     >>> w.vend()
     'Here is your soda.'
     """
-    "*** YOUR CODE HERE ***"
+    def __init__(self, name, price, stock=0, balance=0):
+        self.name = name
+        self.price = price
+        self.stock = stock
+        self.balance = balance
+    def deposit(self, amount):
+        if self.stock <= 0:
+            return 'Machine is out of stock. Here is your ${0}.'.format(amount)
+        else:
+            self.balance += amount
+            return 'Current balance: ${0}'.format(self.balance)
+
+    def vend(self):
+        if self.stock == 0:
+            return 'Machine is out of stock.'
+        elif self.balance < self.price:
+            return 'You must deposit ${0} more.'.format(self.price - self.balance)
+        else:
+            change = self.balance - self.price
+            self.balance = 0
+            self.stock -= 1
+            if change == 0:
+                return 'Here is your {0}.'.format(self.name)
+            return 'Here is your {0} and ${1} change.'.format(self.name, change)
+
+    def restock(self, amount):
+        self.stock += amount
+        return 'Current {0} stock: {1}'.format(self.name, self.stock)
+
+
 
 class MissManners:
     """A container class that only forwards messages that say please.
@@ -140,4 +176,8 @@ class MissManners:
         magic_word = 'please '
         if not message.startswith(magic_word):
             return 'You must learn to say please first.'
-        "*** YOUR CODE HERE ***"
+        method = message[7:]
+        if hasattr(self.obj, method):
+            return getattr(self.obj, method)(*args)
+        else:
+            return 'Thanks for asking, but I know not how to {0}.'.format(method)
