@@ -10,7 +10,9 @@ def cumulative_sum(t):
     >>> t
     Tree(16, [Tree(8, [Tree(5)]), Tree(7)])
     """
-    "*** YOUR CODE HERE ***"
+    for b in t.branches:
+        cumulative_sum(b)
+    t.label = sum([b.label for b in t.branches]) + t.label
 
 # Q7
 def reverse_other(t):
@@ -25,7 +27,16 @@ def reverse_other(t):
     >>> t
     Tree(1, [Tree(3, [Tree(5, [Tree(8), Tree(7)]), Tree(6)]), Tree(2)])
     """
-    "*** YOUR CODE HERE ***"
+    def helper(t, reverse):
+        if t.is_leaf():
+            return
+        new_label = [b.label for b in t.branches][::-1]
+        for i in range(len(t.branches)):
+            b = t.branches[i]
+            helper(b, not reverse)
+            if reverse:
+                b.label = new_label[i]
+    helper(t,True)
 
 # Q8
 def deep_map_mut(fn, link):
@@ -40,7 +51,13 @@ def deep_map_mut(fn, link):
     >>> print(link1)
     <9 <16> 25 36>
     """
-    "*** YOUR CODE HERE ***"
+    if link is Link.empty:
+        return
+    elif isinstance(link.first, Link):
+        deep_map_mut(fn, link.first)
+    else:
+        link.first = fn(link.first)
+    deep_map_mut(fn, link.rest)
 
 # Q9
 def has_cycle(link):
@@ -57,7 +74,14 @@ def has_cycle(link):
     >>> has_cycle(u)
     False
     """
-    "*** YOUR CODE HERE ***"
+    seen = []
+    while link is not Link.empty:
+        if link in seen:
+            return True
+        else:
+            seen.append(link)
+            link = link.rest
+    return False
 
 def has_cycle_constant(link):
     """Return whether link contains a cycle.
