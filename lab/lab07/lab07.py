@@ -8,7 +8,10 @@ def list_to_link(lst):
     >>> print(link)
     <1 2 3>
     """
-    "*** YOUR CODE HERE ***"
+    if not lst:
+        return Link.empty
+    return Link(lst[0], list_to_link(lst[1:]))
+
 
 # Q3
 def link_to_list(link):
@@ -20,7 +23,11 @@ def link_to_list(link):
     >>> link_to_list(Link.empty)
     []
     """
-    "*** YOUR CODE HERE ***"
+    lst = []
+    while link is not Link.empty:
+        lst.append(link.first)
+        link = link.rest
+    return lst
 
 # Q4
 def remove_all(link , value):
@@ -37,7 +44,12 @@ def remove_all(link , value):
     >>> print(l1)
     <0 1>
     """
-    "*** YOUR CODE HERE ***"
+    while link is not Link.empty and link.rest is not Link.empty:
+        if link.rest.first == value:
+            link.rest = link.rest.rest
+        else:
+            link = link.rest
+
 
 # Linked List Class
 class Link:
@@ -153,7 +165,7 @@ class Tree:
     def __eq__(self, other):
         return type(other) is type(self) and self.root == other.label \
                and self.branches == other.branches
-    
+
     def __str__(self):
         def print_tree(t, indent=0):
             tree_str = '  ' * indent + str(t.label)
