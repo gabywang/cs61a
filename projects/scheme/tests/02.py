@@ -7,69 +7,42 @@ test = {
         {
           'code': r"""
           >>> read_line("(a . b)")
-          1a09d430e7d1e06c1b002b5eed3128f9
-          # locked
-          # choice: Pair('a', Pair('b'))
-          # choice: Pair('a', Pair('b', nil))
-          # choice: SyntaxError
-          # choice: Pair('a', 'b')
-          # choice: Pair('a', 'b', nil)
+          Pair('a', 'b')
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""
           >>> read_line("(a b . c)")
-          2f7ad3aa31858dd7f2d9c835c3183eb9
-          # locked
-          # choice: Pair('a', Pair('b', Pair('c', nil)))
-          # choice: Pair('a', Pair('b', Pair('c')))
-          # choice: Pair('a', 'b', 'c')
-          # choice: Pair('a', Pair('b', 'c'))
-          # choice: SyntaxError
+          Pair('a', Pair('b', 'c'))
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""
           >>> read_line("(a b . c d)")
-          6b826f6576a2f13cfd2212abba4ce9d5
-          # locked
-          # choice: Pair('a', Pair('b', Pair('c', 'd')))
-          # choice: Pair('a', Pair('b', 'c'))
-          # choice: Pair('a', Pair('b', Pair('c', Pair('d', nil))))
-          # choice: SyntaxError
+          SyntaxError
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""
           >>> read_line("(a . (b . (c . ())))")
-          fa369c27544211868060f7ecbb4aa135
-          # locked
-          # choice: Pair('a', Pair('b', Pair('c', nil)))
-          # choice: SyntaxError
-          # choice: Pair('a', Pair('b', Pair('c', Pair(nil, nil))))
-          # choice: Pair('a', 'b', 'c')
+          Pair('a', Pair('b', Pair('c', nil)))
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""
           >>> read_line("(a . ((b . (c))))")
-          c7a77fa5cc3120a97441a48e6692e477
-          # locked
-          # choice: Pair('a', Pair(Pair('b', Pair('c', nil)), nil))
-          # choice: Pair('a', Pair('b', Pair('c', nil)), nil)
-          # choice: Pair('a', Pair('b', Pair('c')), nil)
-          # choice: Pair('a', Pair(Pair('b', Pair('c', nil)), nil), nil)
+          Pair('a', Pair(Pair('b', Pair('c', nil)), nil))
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""

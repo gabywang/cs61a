@@ -9,24 +9,17 @@ test = {
           >>> global_frame = create_global_frame()
           >>> global_frame.define("x", 3)
           >>> global_frame.parent is None
-          a87b4aa619df2eba30bc86785b816612
-          # locked
+          True
           >>> global_frame.lookup("x")
-          a3d16f1c59cdc683d6ce640b10aa5c1d
-          # locked
+          3
           >>> global_frame.define("x", 2)
           >>> global_frame.lookup("x")
-          e56af2bab40778990634a527fe4407f8
-          # locked
+          2
           >>> global_frame.lookup("foo")
-          87c30138f7979b4f5a454aacfb191b98
-          # locked
-          # choice: None
-          # choice: SchemeError
-          # choice: 3
+          SchemeError
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""
@@ -34,14 +27,12 @@ test = {
           >>> first_frame.define("x", 3)
           >>> second_frame = Frame(first_frame)
           >>> second_frame.parent == first_frame
-          a87b4aa619df2eba30bc86785b816612
-          # locked
+          True
           >>> second_frame.lookup("x")
-          a3d16f1c59cdc683d6ce640b10aa5c1d
-          # locked
+          3
           """,
           'hidden': False,
-          'locked': True
+          'locked': False
         },
         {
           'code': r"""
