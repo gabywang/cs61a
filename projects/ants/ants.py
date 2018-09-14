@@ -42,12 +42,12 @@ class Place(object):
                 # Phase 6: Special handling for BodyguardAnt
                 # 1. If current ant is a BodyguardAnt and can contain the ant
                 # we are trying to add.
-                if self.ant.container and self.ant.can_contain(insect):
+                if self.ant.can_contain(insect):
                     self.ant.contain_ant(insect)
                     insect.place = self
                 # 2. If the ant we are trying add is a BodyguardAnt and can contain
                 # the current ant.
-                elif insect.container and insect.can_contain(self.ant):
+                elif insect.can_contain(self.ant):
                     insect.contain_ant(self.ant)
                     self.ant = insect
                     insect.place = self
@@ -186,11 +186,7 @@ class Ant(Insect):
         # 1. The ant is a container.
         # 2. This ant does not already contain another ant.
         # 3. The other ant is not a container.
-        if self.container and not self.ant and not other.container:
-            return True
-        else:
-            return False
-
+        return self.container and not self.ant and not other.container
 
 class HarvesterAnt(Ant):
     """HarvesterAnt produces 1 additional food per turn for the colony."""
@@ -217,7 +213,8 @@ class ThrowerAnt(Ant):
     damage = 1
     food_cost = 3
     min_range = 0
-    max_range = 10
+    # tried float('inf') but it doesn't work.
+    max_range = 10000
 
     def nearest_bee(self, hive):
         """Return the nearest Bee in a Place that is not the HIVE, connected to
@@ -227,14 +224,14 @@ class ThrowerAnt(Ant):
         """
         # BEGIN Problem 5
         place = self.place
-        count = 0
+        dist = 0
         # Throw at the bee that is not still in the hive.
-        while place != hive:
+        while place is not hive:
             # Return a random bee if there is any, or consider the next place.
-            if random_or_none(place.bees) != None and count in range(self.min_range, self.max_range+1):
+            if random_or_none(place.bees) != None and dist in range(self.min_range, self.max_range+1):
                 return random_or_none(place.bees)
             place = place.entrance
-            count += 1
+            dist += 1
         return None
 
         # END Problem 5
@@ -287,6 +284,7 @@ class FireAnt(Ant):
         """
         # BEGIN Problem 4
         # Attack all the bees from its place.
+        # I can't follow the advice because reduce_armor would remove the ant first if its armor < 0.
         if self.armor - amount <= 0:
             for bee in self.place.bees[:]:  # Slice the sequence to help modify it.
                 bee.reduce_armor(self.damage)
